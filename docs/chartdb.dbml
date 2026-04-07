@@ -1,0 +1,91 @@
+Table "branches" {
+  "branch_id" bigint [pk, not null, increment, ref: - "management"."branch_id"]
+  "city" text
+  "state" text
+}
+
+Table "persons" {
+  "person_id" bigint [pk, not null, increment]
+  "name_first" text
+  "name_last" text
+  "email" text
+}
+
+Table "employees" {
+  "employee_id" bigint [pk, not null, ref: > "persons"."person_id", ref: - "works_at"."employee_id"]
+  "position" text
+}
+
+Table "games" {
+  "game_id" bigint [pk, not null, increment, ref: - "games_at_branches"."game_id"]
+  "name" text
+  "price_per_play" float
+}
+
+Table "customers" {
+  "customer_id" bigint [pk, not null, ref: > "persons"."person_id"]
+  "credit" float [not null]
+}
+
+Table "management" {
+  "employee_id" bigint [unique, not null, ref: > "employees"."employee_id"]
+  "branch_id" bigint [not null]
+}
+
+Table "gameplay" {
+  "customer_id" bigint [unique, not null, ref: > "customers"."customer_id"]
+  "game_id" bigint [unique, not null, ref: > "games"."game_id"]
+  "time_played" timestamp [not null]
+  "money_won" float [not null]
+}
+
+Table "special_rooms" {
+  "room_id" bigint [pk, not null, increment, ref: - "rooms_at_branches"."room_id"]
+  "type" text
+}
+
+Table "games_at_branches" {
+  "game_id" bigint [unique, not null]
+  "branch_id" bigint [not null, ref: > "branches"."branch_id"]
+}
+
+Table "rooms_at_branches" {
+  "room_id" bigint [unique, not null]
+  "branch_id" bigint [not null, ref: > "branches"."branch_id"]
+}
+
+Table "cocktail_offerings" {
+  "offering_id" bigint [pk, not null]
+  "bar_id" bigint [unique, not null, ref: > "special_rooms"."room_id"]
+  "drink_id" bigint [not null, ref: > "cocktails"."drink_id"]
+  "price" float [not null]
+}
+
+Table "cocktails" {
+  "drink_id" bigint [pk, not null]
+  "name" text [not null]
+}
+
+Table "shows" {
+  "show_id" bigint [pk, not null]
+  "name" bigint
+}
+
+Table "show_offerings" {
+  "showroom_id" bigint [pk, not null, ref: > "special_rooms"."room_id"]
+  "show_id" bigint [ref: > "shows"."show_id"]
+  "date" datetime
+}
+
+Table "cocktail_purchases" {
+  "customer_id" bigint [unique, not null, ref: > "customers"."customer_id"]
+  "offering_id" bigint [not null, ref: > "cocktail_offerings"."offering_id"]
+  "date" datetime [not null]
+}
+
+Table "works_at" {
+  "employee_id" bigint [unique, not null]
+  "branch_id" bigint [not null, ref: > "branches"."branch_id"]
+  "since" date [not null]
+  "to" date
+}
