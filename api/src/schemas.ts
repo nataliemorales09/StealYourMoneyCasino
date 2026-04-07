@@ -1,50 +1,79 @@
 import { z } from "zod";
 
-export const createInstructorSchema = z.object({
+export const createBranchSchema = z.object({
+  city: z.string().max(200).optional().nullable(),
+  state: z.string().max(200).optional().nullable(),
+});
+export type CreateBranchInput = z.infer<typeof createBranchSchema>;
+
+export const createPersonSchema = z.object({
+  name_first: z.string().max(200).optional().nullable(),
+  name_last: z.string().max(200).optional().nullable(),
+  email: z.string().email().max(255).optional().nullable(),
+});
+export type CreatePersonInput = z.infer<typeof createPersonSchema>;
+
+export const createEmployeeSchema = z.object({
+  employee_id: z.coerce.number().int().positive(),
+  position: z.string().max(200).optional().nullable(),
+});
+export type CreateEmployeeInput = z.infer<typeof createEmployeeSchema>;
+
+export const createCustomerSchema = z.object({
+  customer_id: z.coerce.number().int().positive(),
+  credit: z.coerce.number(),
+});
+export type CreateCustomerInput = z.infer<typeof createCustomerSchema>;
+
+export const createGameSchema = z.object({
+  name: z.string().max(200).optional().nullable(),
+  price_per_play: z.coerce.number().optional().nullable(),
+});
+export type CreateGameInput = z.infer<typeof createGameSchema>;
+
+export const createSpecialRoomSchema = z.object({
+  type: z.string().max(200).optional().nullable(),
+});
+export type CreateSpecialRoomInput = z.infer<typeof createSpecialRoomSchema>;
+
+export const createGameplaySchema = z.object({
+  customer_id: z.coerce.number().int().positive(),
+  game_id: z.coerce.number().int().positive(),
+  time_played: z.string().min(1),
+  money_won: z.coerce.number(),
+});
+export type CreateGameplayInput = z.infer<typeof createGameplaySchema>;
+
+export const createCocktailSchema = z.object({
+  drink_id: z.coerce.number().int().positive(),
   name: z.string().min(1).max(200),
-  email: z.string().email().max(255),
-  department: z.string().max(200).optional().nullable(),
 });
+export type CreateCocktailInput = z.infer<typeof createCocktailSchema>;
 
-export type CreateInstructorInput = z.infer<typeof createInstructorSchema>;
-
-export const createStudentSchema = z.object({
-  name: z.string().min(1).max(200),
-  email: z.string().email().max(255),
+export const createCocktailOfferingSchema = z.object({
+  offering_id: z.coerce.number().int().positive(),
+  bar_id: z.coerce.number().int().positive(),
+  drink_id: z.coerce.number().int().positive(),
+  price: z.coerce.number(),
 });
+export type CreateCocktailOfferingInput = z.infer<typeof createCocktailOfferingSchema>;
 
-export type CreateStudentInput = z.infer<typeof createStudentSchema>;
-
-export const createCourseSchema = z.object({
-  code: z.string().min(1).max(32),
-  title: z.string().min(1).max(300),
-  description: z.string().max(4000).optional().nullable(),
-  instructor_id: z.coerce.number().int().positive(),
-  credits: z.coerce.number().int().min(1).max(30),
+export const createCocktailPurchaseSchema = z.object({
+  customer_id: z.coerce.number().int().positive(),
+  offering_id: z.coerce.number().int().positive(),
+  date: z.string().min(1),
 });
+export type CreateCocktailPurchaseInput = z.infer<typeof createCocktailPurchaseSchema>;
 
-export type CreateCourseInput = z.infer<typeof createCourseSchema>;
-
-export const createCourseSectionSchema = z.object({
-  course_id: z.coerce.number().int().positive(),
-  term: z.string().min(1).max(64),
-  section_code: z.string().min(1).max(32),
-  schedule: z.string().max(200).optional().nullable(),
-  capacity: z.coerce.number().int().min(1).max(500),
+export const createShowSchema = z.object({
+  show_id: z.coerce.number().int().positive(),
+  name: z.coerce.number().optional().nullable(),
 });
+export type CreateShowInput = z.infer<typeof createShowSchema>;
 
-export type CreateCourseSectionInput = z.infer<typeof createCourseSectionSchema>;
-
-export const createEnrollmentSchema = z.object({
-  student_id: z.coerce.number().int().positive(),
-  section_id: z.coerce.number().int().positive(),
-  grade: z.string().max(8).optional().nullable(),
+export const createShowOfferingSchema = z.object({
+  showroom_id: z.coerce.number().int().positive(),
+  show_id: z.coerce.number().int().positive().optional().nullable(),
+  date: z.string().optional().nullable(),
 });
-
-export type CreateEnrollmentInput = z.infer<typeof createEnrollmentSchema>;
-
-export const patchEnrollmentGradeSchema = z.object({
-  grade: z.string().max(8).nullable(),
-});
-
-export type PatchEnrollmentGradeInput = z.infer<typeof patchEnrollmentGradeSchema>;
+export type CreateShowOfferingInput = z.infer<typeof createShowOfferingSchema>;
