@@ -16,6 +16,8 @@ import {
   createShowSchema,
   createSpecialRoomSchema,
 } from "./schemas.js";
+import { registerPeopleRoutes } from "./routes/people.js";
+import { registerEmploymentRoutes } from "./routes/employment.js";
 
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "127.0.0.1";
@@ -28,6 +30,9 @@ async function main(): Promise<void> {
     origin: true,
   });
   app.get("/health", async () => ({ ok: true }));
+
+  app.register(registerPeopleRoutes);
+  app.register(registerEmploymentRoutes);
 
   // Branches
   app.get("/branches", async (_req, reply) => {
