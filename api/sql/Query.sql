@@ -98,14 +98,37 @@ JOIN branches AS b
 WHERE b.city = ?
 ORDER BY m.employee_id;
 
---9: what rooms needs to be fix in this state
+--9: what branches don't have a showroom in this state
+SELECT b.branch_id,
+       b.city,
+       b.state
+FROM branches AS b
+LEFT JOIN rooms_at_branches AS rb
+  ON b.branch_id = rb.branch_id
+WHERE rb.room_id IS NULL
+  AND b.state = ?
+ORDER BY b.branch_id;
 
+--10: how much money did we make in the last month
+SELECT SUM(gp.money_won) AS total_money_won
+FROM gameplay AS gp
+WHERE gp.time_played >= NOW() - INTERVAL '1 month'
+GROUP BY gp.customer_id, p.name_first, p.name_last
+ORDER BY total_money_won DESC, gp.customer_id;
 
---10: how much money are we making and losing
-
-
---11: The police need these people first and last name that played this game and went to this show
-
+--11: The police need these people first and last name that played this game at this branch
+SELECT p.name_first,
+       p.name_last,
+FROM gameplay AS gp
+JOIN persons AS p ON gp.customer_id = p.person_id
+JOIN games AS g ON gp.game_id = g.game_id
+JOIN games_at_branches AS gb
+  ON g.game_id = gb.game_id
+JOIN branches AS b ON gb.branch_id = b.branch_id
+WHERE b.state = ?
+  AND b.city = ?
+  AND g.name = ?
+ORDER BY p.name_first, p.name_last;
 
 --12: show me the dates of the shows and and what rooms the show is in 
 SELECT so.date,
@@ -117,7 +140,20 @@ JOIN shows AS s
 ORDER BY so.date, so.showroom_id;
 
 --13: What is the game that has been played the most in what state and city
-
+SELECT g.name,
+       b.state,
+       b.city,
+       COUNT() AS times_played
+FROM gameplay AS gp
+JOIN games AS g
+  ON gp.game_id = g.game_id
+JOIN games_at_branches AS gb
+  ON g.game_id = gb.game_id
+JOIN branches AS b
+  ON gb.branch_id = b.branch_id
+GROUP BY gp.game_id, g.name
+ORDER BY times_played DESC, g.name
+LIMIT 1;
 
 --14: who won the most money
 SELECT gp.customer_id,
@@ -144,6 +180,16 @@ JOIN works_at AS w ON e.employee_id = w.employee_id
 JOIN branches AS b ON w.branch_id = b.branch_id
 ORDER BY e.employee_id;
 
---16: what is the person email who has purchase this cocktail and play this game and then seen this show.
+--16: what is the person email who has purchase this cocktail and play this game.
+SELECT p.email
+FROM persons AS p
+JOIN customers AS c ON p.person_id = c.customer_id
+JOIN cocktail_purchases AS cp ON c.customer_id = cp.customer_id
+JOIN cocktail_offerings AS co ON cp.offering_id = co.offering_id
+JOIN cocktails AS c ON co.drink_id = c.drink_id
+JOIN gameplay AS gp ON c.customer_id = gp.customer_id
+JOIN games AS g ON gp.game_id = g.game_id
+WHERE c.name = ?
+  AND g.name = ?
 
 
