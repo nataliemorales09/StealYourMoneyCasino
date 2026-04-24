@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background: radial-gradient(circle at top, #1b3b2f, #070707);
+  background: radial-gradient(circle at top, #155a1d, #06350e);
   color: #c3bead;
   font-family: Georgia, serif;
 }
@@ -13,9 +13,9 @@ body {
 }
 
 h1 {
-  color: #f32323;
-  font-size: 3.5rem;
-  text-shadow: 0 0 12px #b30000;
+  color: #8b0000;
+  font-size: 4rem;
+  -webkit-text-stroke: 1px gold;
 }
 
 h2, h3 {

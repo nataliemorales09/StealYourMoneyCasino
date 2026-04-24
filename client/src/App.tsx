@@ -127,6 +127,11 @@ async function fetchCocktails() {
         {employees.map((emp) => (
           <li key={emp.employee_id}>
             {emp.persons?.name_first} {emp.persons?.name_last} — {emp.position}
+            <br />
+            Branch ID:{" "}
+            {emp.works_at?.length > 0
+              ? emp.works_at.map((w: any) => w.branch_id).join(", ")
+              : "No branch assigned"}
           </li>
         ))}
       </ul>
