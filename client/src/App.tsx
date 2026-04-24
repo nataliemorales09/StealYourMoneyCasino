@@ -28,29 +28,50 @@ function App() {
   }
 
   async function fetchBranches() {
+    // if already showing → hide it
+    if (branches.length > 0) {
+      setBranches([]);
+      return;
+    }
+  
+    // otherwise fetch and show
     const res = await fetch(`${API}/branches`);
     const data = await res.json();
     setBranches(data.data || []);
   }
 
   async function fetchEmployees() {
+    if (employees.length > 0) {
+      setEmployees([]);
+      return;
+    }
+  
     const res = await fetch(`${API}/person/employee`);
     const data = await res.json();
-    console.log("employees:", data);
     setEmployees(data.data || []);
   }
 
   async function fetchCustomers() {
-    const res = await fetch(`${API}/person/customer`);
-    const data = await res.json();
-    setCustomers(data.data || []);
+  if (customers.length > 0) {
+    setCustomers([]);
+    return;
   }
 
-  async function fetchEmployment() {
-    const res = await fetch(`${API}/employment`);
-    const data = await res.json();
-    setEmployment(data.data || []);
+  const res = await fetch(`${API}/person/customer`);
+  const data = await res.json();
+  setCustomers(data.data || []);
+}
+
+async function fetchEmployment() {
+  if (employment.length > 0) {
+    setEmployment([]);
+    return;
   }
+
+  const res = await fetch(`${API}/employment`);
+  const data = await res.json();
+  setEmployment(data.data || []);
+}
 
   return (
     <div style={{ padding: "2rem" }}>
@@ -65,10 +86,17 @@ function App() {
       <hr />
 
       <h2>API Routes</h2>
-      <button onClick={fetchBranches}>Load Branches</button>
-      <button onClick={fetchEmployees}>Load Employees</button>
-      <button onClick={fetchCustomers}>Load Customers</button>
-      <button onClick={fetchEmployment}>Load Employment</button>
+      <button onClick={fetchBranches}>
+          {branches.length > 0 ? "Hide Branches" : "Load Branches"}
+      </button>
+      <button onClick={fetchEmployees}>
+        {employees.length >0  ? "Hide Employees" : "Load Employees"}
+      </button>
+      <button onClick={fetchCustomers}>
+        {customers.length > 0 ?"Hide Customers" : "Load Customers"}
+      </button>
+      <button onClick={fetchEmployment}>
+        {employment.length >0 ? "Hide Employment" : "Load employment"}</button>
 
       <h3>Branches</h3>
       <ul style={{ listStyle: "none", padding: 0 }}>
