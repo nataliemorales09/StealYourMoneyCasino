@@ -10,26 +10,48 @@ type Branch = {
 function App() {
   const [health, setHealth] = useState("Loading...");
   const [branches, setBranches] = useState<Branch[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [employment, setEmployment] = useState<any[]>([]);
   const [error, setError] = useState("");
 
+  const API = "http://127.0.0.1:3000";
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const healthRes = await fetch("http://127.0.0.1:3000/health");
-        const healthData = await healthRes.json();
-        setHealth(JSON.stringify(healthData));
-
-        const branchesRes = await fetch("http://127.0.0.1:3000/branches");
-        const branchesData = await branchesRes.json();
-        setBranches(branchesData.data || []);
-      } catch (err) {
-        setError("Could not connect to backend");
-        console.error(err);
-      }
-    };
-
-    fetchData();
+    fetchHealth();
+    fetchBranches();
   }, []);
+
+  async function fetchHealth() {
+    const res = await fetch(`${API}/health`);
+    const data = await res.json();
+    setHealth(JSON.stringify(data));
+  }
+
+  async function fetchBranches() {
+    const res = await fetch(`${API}/branches`);
+    const data = await res.json();
+    setBranches(data.data || []);
+  }
+
+  async function fetchEmployees() {
+    const res = await fetch(`${API}/person/employee`);
+    const data = await res.json();
+    console.log("employees:", data);
+    setEmployees(data.data || []);
+  }
+
+  async function fetchCustomers() {
+    const res = await fetch(`${API}/person/customer`);
+    const data = await res.json();
+    setCustomers(data.data || []);
+  }
+
+  async function fetchEmployment() {
+    const res = await fetch(`${API}/employment`);
+    const data = await res.json();
+    setEmployment(data.data || []);
+  }
 
   return (
     <div style={{ padding: "2rem" }}>
@@ -38,20 +60,56 @@ function App() {
       <h2>Backend Health</h2>
       <p>{health}</p>
 
-      <h2>Branches</h2>
-      {error && <p>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
+      <h2>Branches</h2>
       {branches.length === 0 ? (
         <p>No branches found.</p>
       ) : (
-        <ul>
+        <ul style={{ listStyle: "none", padding: 0 }}>
           {branches.map((branch) => (
-            <li key={branch.branch_id}>
-              {branch.city}, {branch.state}
-            </li>
+          <li key={branch.branch_id} style={{ marginBottom: "10px" }}>
+            {branch.city}, {branch.state}
+          </li>
           ))}
         </ul>
       )}
+
+      <hr />
+
+      <h2>Other API Routes</h2>
+
+      <button onClick={fetchEmployees}>Load Employees</button>
+      <button onClick={fetchCustomers}>Load Customers</button>
+      <button onClick={fetchEmployment}>Load Employment</button>
+
+      <h3>Employees</h3>
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {employees.map((emp) => (
+          <li key={emp.employee_id}>
+            {emp.persons?.name_first} {emp.persons?.name_last} — {emp.position}
+          </li>
+        ))}
+      </ul>
+
+      <h3>Customers</h3>
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {customers.map((cust) => (
+        <li key={cust.customer_id} style={{ marginBottom: "10px" }}>
+          {cust.persons?.name_first} {cust.persons?.name_last} — Credit:{" "}
+          {cust.credit}
+        </li>
+        ))}
+      </ul>
+
+      <h3>Employment</h3>
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {employment.map((emp) => (
+          <li key={emp.employee_id}>
+            Employee #{emp.employee_id} — {emp.position}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
