@@ -1,7 +1,7 @@
 body {
   margin: 0;
   background: radial-gradient(circle at top, #1b3b2f, #070707);
-  color: #f5f0dc;
+  color: #c3bead;
   font-family: Georgia, serif;
 }
 
@@ -13,7 +13,7 @@ body {
 }
 
 h1 {
-  color: #ffd700;
+  color: #f32323;
   font-size: 3.5rem;
   text-shadow: 0 0 12px #b30000;
 }
@@ -24,8 +24,8 @@ h2, h3 {
 
 button {
   background: #8b0000;
-  color: #ffd700;
-  border: 2px solid #ffd700;
+  color: #f1d847;
+  border: 2px solid #b8a641;
   border-radius: 8px;
   padding: 10px 16px;
   margin: 6px;
