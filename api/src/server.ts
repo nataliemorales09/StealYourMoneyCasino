@@ -6,7 +6,6 @@ import {
   createBranchSchema,
   createCocktailOfferingSchema,
   createCocktailPurchaseSchema,
-  createCocktailSchema,
   createCustomerSchema,
   createEmployeeSchema,
   createGameSchema,
@@ -18,6 +17,7 @@ import {
 } from "./schemas.js";
 import { registerPeopleRoutes } from "./routes/people.js";
 import { registerEmploymentRoutes } from "./routes/employment.js";
+import { registerCocktailRoutes } from "./routes/cocktails.js";
 
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "127.0.0.1";
@@ -33,6 +33,7 @@ async function main(): Promise<void> {
 
   app.register(registerPeopleRoutes);
   app.register(registerEmploymentRoutes);
+  app.register(registerCocktailRoutes);
 
   // Branches
   app.get("/branches", async (_req, reply) => {
@@ -115,15 +116,6 @@ async function main(): Promise<void> {
     const parsed = createGameplaySchema.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send(parsed.error.flatten());
     const { data, error } = await supabase.from("gameplay").insert(parsed.data).select("*").single();
-    if (error) return reply.code(500).send({ error: error.message });
-    return { data };
-  });
-
-  // Cocktails
-  app.post("/cocktails", async (req, reply) => {
-    const parsed = createCocktailSchema.safeParse(req.body);
-    if (!parsed.success) return reply.code(400).send(parsed.error.flatten());
-    const { data, error } = await supabase.from("cocktails").insert(parsed.data).select("*").single();
     if (error) return reply.code(500).send({ error: error.message });
     return { data };
   });

@@ -13,6 +13,7 @@ function App() {
   const [employees, setEmployees] = useState<any[]>([]);
   const [customers, setCustomers] = useState<any[]>([]);
   const [employment, setEmployment] = useState<any[]>([]);
+  const [cocktails, setCocktails] = useState<any[]>([]);
   const [error, setError] = useState("");
 
   const API = "http://127.0.0.1:3000";
@@ -72,6 +73,16 @@ async function fetchEmployment() {
   const data = await res.json();
   setEmployment(data.data || []);
 }
+async function fetchCocktails() {
+  if (cocktails.length > 0) {
+    setCocktails([]);
+    return;
+  }
+
+  const res = await fetch(`${API}/cocktails`);
+  const data = await res.json();
+  setCocktails(data.data || []);
+}
 
   return (
     <div style={{ padding: "2rem" }}>
@@ -96,7 +107,11 @@ async function fetchEmployment() {
         {customers.length > 0 ?"Hide Customers" : "Load Customers"}
       </button>
       <button onClick={fetchEmployment}>
-        {employment.length >0 ? "Hide Employment" : "Load employment"}</button>
+        {employment.length >0 ? "Hide Employment" : "Load employment"}
+      </button>
+      <button onClick={fetchCocktails}>
+        {cocktails.length > 0 ? "Hide Cocktails" : "Load Cocktails"}
+      </button>
 
       <h3>Branches</h3>
       <ul style={{ listStyle: "none", padding: 0 }}>
@@ -134,6 +149,19 @@ async function fetchEmployment() {
           </li>
         ))}
       </ul>
+
+      {cocktails.length > 0 && (
+  <>
+      <h3>Cocktails</h3>
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {cocktails.map((drink) => (
+          <li key={drink.drink_id}>
+          {drink.name}
+          </li>
+        ))}
+      </ul>
+  </>
+)}
     </div>
   );
 }
