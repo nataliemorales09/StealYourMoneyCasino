@@ -12,8 +12,8 @@ function App() {
   const [branches, setBranches] = useState<Branch[]>([]);
   const [employees, setEmployees] = useState<any[]>([]);
   const [customers, setCustomers] = useState<any[]>([]);
-  const [employment, setEmployment] = useState<any[]>([]);
   const [cocktails, setCocktails] = useState<any[]>([]);
+  const [games, setGames] = useState<any[]>([]);
   const [error, setError] = useState("");
 
   const API = "http://127.0.0.1:3000";
@@ -63,16 +63,7 @@ function App() {
   setCustomers(data.data || []);
 }
 
-async function fetchEmployment() {
-  if (employment.length > 0) {
-    setEmployment([]);
-    return;
-  }
 
-  const res = await fetch(`${API}/employment`);
-  const data = await res.json();
-  setEmployment(data.data || []);
-}
 async function fetchCocktails() {
   if (cocktails.length > 0) {
     setCocktails([]);
@@ -82,6 +73,16 @@ async function fetchCocktails() {
   const res = await fetch(`${API}/cocktails`);
   const data = await res.json();
   setCocktails(data.data || []);
+}
+async function fetchGames() {
+  if (games.length > 0) {
+    setGames([]);
+    return;
+  }
+
+  const res = await fetch(`${API}/games`);
+  const data = await res.json();
+  setGames(data.data || []);
 }
 
   return (
@@ -101,18 +102,21 @@ async function fetchCocktails() {
           {branches.length > 0 ? "Hide Branches" : "Load Branches"}
       </button>
       <button onClick={fetchEmployees}>
-        {employees.length >0  ? "Hide Employees" : "Load Employees"}
+        {employees.length >0  ? "Hide Casino Staff" : "Load Casino Staff"}
       </button>
       <button onClick={fetchCustomers}>
         {customers.length > 0 ?"Hide Customers" : "Load Customers"}
       </button>
-      <button onClick={fetchEmployment}>
-        {employment.length >0 ? "Hide Employment" : "Load employment"}
-      </button>
+      
       <button onClick={fetchCocktails}>
         {cocktails.length > 0 ? "Hide Cocktails" : "Load Cocktails"}
       </button>
+      <button onClick={fetchGames}>
+        {games.length > 0 ? "Hide Games" : "Load Games"}
+      </button>
 
+      {branches.length >0 && (
+      <>
       <h3>Branches</h3>
       <ul style={{ listStyle: "none", padding: 0 }}>
         {branches.map((branch) => (
@@ -121,12 +125,19 @@ async function fetchCocktails() {
         </li>
         ))}
       </ul>
-
-      <h3>Employees</h3>
+      </>
+    )}
+      {employees.length >0 && (
+        <>
+      <h3> Casino Staff</h3>
       <ul style={{ listStyle: "none", padding: 0 }}>
         {employees.map((emp) => (
           <li key={emp.employee_id}>
-            {emp.persons?.name_first} {emp.persons?.name_last} — {emp.position}
+            <strong>
+              {emp.persons?.name_first} {emp.persons?.name_last}
+            </strong>
+            <br />
+            Position: {emp.position}
             <br />
             Branch ID:{" "}
             {emp.works_at?.length > 0
@@ -135,38 +146,48 @@ async function fetchCocktails() {
           </li>
         ))}
       </ul>
+      </>
+      )}
 
-      <h3>Customers</h3>
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {customers.map((cust) => (
-        <li key={cust.customer_id} style={{ marginBottom: "10px" }}>
-          {cust.persons?.name_first} {cust.persons?.name_last} — Credit:{" "}
-          {cust.credit}
-        </li>
-        ))}
-      </ul>
-
-      <h3>Employment</h3>
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {employment.map((emp) => (
-          <li key={emp.employee_id}>
-            Employee #{emp.employee_id} — {emp.position}
-          </li>
-        ))}
-      </ul>
+      {customers.length >0 && (
+        <>
+          <h3>Customers</h3>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {customers.map((cust) => (
+            <li key={cust.customer_id} style={{ marginBottom: "10px" }}>
+              {cust.persons?.name_first} {cust.persons?.name_last} — Credit:{" "}
+              {cust.credit}
+            </li>
+            ))}
+          </ul>
+        </>
+      )}
 
       {cocktails.length > 0 && (
+        <>
+        <h3>Cocktails</h3>
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {cocktails.map((drink) => (
+            <li key={drink.drink_id}>
+            {drink.name}
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+  {games.length > 0 && (
   <>
-      <h3>Cocktails</h3>
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {cocktails.map((drink) => (
-          <li key={drink.drink_id}>
-          {drink.name}
-          </li>
-        ))}
-      </ul>
+    <h3>Games</h3>
+    <ul style={{ listStyle: "none", padding: 0 }}>
+      {games.map((game) => (
+        <li key={game.game_id}>
+          {game.name} — ${game.price_per_play}
+        </li>
+      ))}
+    </ul>
   </>
-)}
+  )}
+
     </div>
   );
 }

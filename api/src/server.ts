@@ -8,7 +8,6 @@ import {
   createCocktailPurchaseSchema,
   createCustomerSchema,
   createEmployeeSchema,
-  createGameSchema,
   createGameplaySchema,
   createPersonSchema,
   createShowOfferingSchema,
@@ -18,6 +17,7 @@ import {
 import { registerPeopleRoutes } from "./routes/people.js";
 import { registerEmploymentRoutes } from "./routes/employment.js";
 import { registerCocktailRoutes } from "./routes/cocktails.js";
+import { registerGameRoutes } from "./routes/games.js";
 
 const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? "127.0.0.1";
@@ -34,6 +34,7 @@ async function main(): Promise<void> {
   app.register(registerPeopleRoutes);
   app.register(registerEmploymentRoutes);
   app.register(registerCocktailRoutes);
+  app.register(registerGameRoutes);
 
   // Branches
   app.get("/branches", async (_req, reply) => {
@@ -79,21 +80,6 @@ async function main(): Promise<void> {
     const parsed = createCustomerSchema.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send(parsed.error.flatten());
     const { data, error } = await supabase.from("customers").insert(parsed.data).select("*").single();
-    if (error) return reply.code(500).send({ error: error.message });
-    return { data };
-  });
-
-  // Games
-  app.get("/games", async (_req, reply) => {
-    const { data, error } = await supabase.from("games").select("*").order("game_id");
-    if (error) return reply.code(500).send({ error: error.message });
-    return { data };
-  });
-
-  app.post("/games", async (req, reply) => {
-    const parsed = createGameSchema.safeParse(req.body);
-    if (!parsed.success) return reply.code(400).send(parsed.error.flatten());
-    const { data, error } = await supabase.from("games").insert(parsed.data).select("*").single();
     if (error) return reply.code(500).send({ error: error.message });
     return { data };
   });
