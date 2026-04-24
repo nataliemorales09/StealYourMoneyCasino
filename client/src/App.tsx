@@ -19,7 +19,6 @@ function App() {
 
   useEffect(() => {
     fetchHealth();
-    fetchBranches();
   }, []);
 
   async function fetchHealth() {
@@ -62,26 +61,23 @@ function App() {
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <h2>Branches</h2>
-      {branches.length === 0 ? (
-        <p>No branches found.</p>
-      ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {branches.map((branch) => (
-          <li key={branch.branch_id} style={{ marginBottom: "10px" }}>
-            {branch.city}, {branch.state}
-          </li>
-          ))}
-        </ul>
-      )}
-
+    
       <hr />
 
-      <h2>Other API Routes</h2>
-
+      <h2>API Routes</h2>
+      <button onClick={fetchBranches}>Load Branches</button>
       <button onClick={fetchEmployees}>Load Employees</button>
       <button onClick={fetchCustomers}>Load Customers</button>
       <button onClick={fetchEmployment}>Load Employment</button>
+
+      <h3>Branches</h3>
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {branches.map((branch) => (
+        <li key={branch.branch_id}>
+          {branch.city}, {branch.state}
+        </li>
+        ))}
+      </ul>
 
       <h3>Employees</h3>
       <ul style={{ listStyle: "none", padding: 0 }}>
